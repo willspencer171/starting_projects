@@ -17,8 +17,8 @@ from functions import *
 global finished
 finished = False
 
-PATH_TO_APP_STORE = "App Store Analysis\\AppleStore.dill"
-PATH_TO_GOOGLE_PLAY_STORE = "App Store Analysis\\googleplaystore.dill"
+PATH_TO_APP_STORE = "App Store Analysis\\Data\\AppleStore.dill"
+PATH_TO_GOOGLE_PLAY_STORE = "App Store Analysis\\Data\\googleplaystore.dill"
 RE_FLOAT = re.compile(r"[0-9.]+$")
 RE_M = re.compile(r"[0-9.]+M$")
 RE_K = re.compile(r"[0-9.]+k$")
