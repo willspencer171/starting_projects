@@ -1,12 +1,13 @@
-import re, inspect, threading, time, datetime, os, dill
+import re, inspect, threading, time, os, dill
+from datetime import datetime
 from collections import namedtuple
 from queue import Queue
 
 global finished
 finished = False
-
-PATH_TO_APP_STORE = "App Store Analysis\\Data\\AppleStore.dill"
-PATH_TO_GOOGLE_PLAY_STORE = "App Store Analysis\\Data\\googleplaystore.dill"
+DATA_FOLDER = os.path.join(os.path.dirname(__file__), "Data")
+PATH_TO_APP_STORE = os.path.join(DATA_FOLDER, "AppleStore.dill")
+PATH_TO_GOOGLE_PLAY_STORE = os.path.join(DATA_FOLDER, "googleplaystore.dill")
 RE_FLOAT = re.compile(r"[0-9.]+$")
 RE_M = re.compile(r"[0-9.]+M$")
 RE_K = re.compile(r"[0-9.]+k$")
