@@ -1,6 +1,5 @@
 import re, inspect, threading, time, os, pickle
 from datetime import datetime
-from collections import namedtuple
 from queue import Queue
 
 global finished
