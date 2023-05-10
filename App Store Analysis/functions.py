@@ -1,4 +1,4 @@
-import re, inspect, threading, time, os, dill
+import re, inspect, threading, time, os, pickle
 from datetime import datetime
 from collections import namedtuple
 from queue import Queue
@@ -6,8 +6,10 @@ from queue import Queue
 global finished
 finished = False
 DATA_FOLDER = os.path.join(os.path.dirname(__file__), "Data")
-PATH_TO_APP_STORE = os.path.join(DATA_FOLDER, "AppleStore.dill")
-PATH_TO_GOOGLE_PLAY_STORE = os.path.join(DATA_FOLDER, "googleplaystore.dill")
+
+PATH_TO_APP_STORE = os.path.join(DATA_FOLDER, "AppleStore.pickle")
+PATH_TO_GOOGLE_PLAY_STORE = os.path.join(DATA_FOLDER, "googleplaystore.pickle")
+
 RE_FLOAT = re.compile(r"[0-9.]+$")
 RE_M = re.compile(r"[0-9.]+M$")
 RE_K = re.compile(r"[0-9.]+k$")
@@ -61,6 +63,7 @@ def app_value_clean(value: str, output: list, iteration=None,
             value = round(float(value) / 1000000, 2)
         else:
             value = int(value)
+
     # if digits and period "." (only one since there are version numbers with multiple "."),
     # convert to float
     elif isfloat(value) and value.count(".") <= 1 and value != "":
@@ -68,9 +71,13 @@ def app_value_clean(value: str, output: list, iteration=None,
 
     # There are some instances where the number of installs is *multiple of 10*+
     # We can't use this number to do any maths with so convert to int
-    elif value.startswith('"') and re.search('[0-1]\+"$', value):
+    elif value.startswith('"') and re.search(r'[015]\+"?$', value):
         value = int(
             "".join([letter for letter in value[1:-2] if letter != ","]))
+    
+    # For cases where the number of installs is not enclosed in quotations
+    elif re.search(r"(?<![\w\s])\d+\+$", value):
+        value = int(value[:-1])
 
     elif re_m.match(value) and isfloat(value[:-1]):
         value = float(value[:-1])
@@ -84,6 +91,9 @@ def app_value_clean(value: str, output: list, iteration=None,
             value = datetime.strptime(value, '"%B %d, %Y"').date()
         except ValueError:
             pass
+    
+    elif value.startswith("$"):
+        value = float(value[1:])
 
     # finally, update the dictionary
     output += [value]
@@ -130,10 +140,13 @@ def open_data(file, headers=True):
     """ also no longer needed as item.strip() removes whitespace including \\n 
         if _app[-1].endswith("\n"):
             _app[-1] = _app[-1][:-1] """
-
+    
     output = {}
     duplicate = set()
     dup_count = 0
+
+    # This used to generate a namedtuple. However, this was taking up a lot of time,
+    # and also required dill. This way I can use pickle to speed it up a little
 
     # Cycle through apps in file, adding each to the dictionary using headers as keys
     # Each value must be checked and converted to int, float, or date
@@ -149,47 +162,48 @@ def open_data(file, headers=True):
                 _new_id = True
             if "_new_id" in locals():
                 _app += [app_index]
-            App = namedtuple("App", _headers)
-            
+            App = {}
+
+            for index, header in enumerate(_headers):
+                app_value_clean(_app[index], vals, index)
+                App[header] = vals[-1]
         else:
             # if no headers, the key is just the index of the column
-            # could refactor this into the OutputDict.app_update_check function but it would lose
-            # readability I think
-            App = namedtuple("App", range(len(_app[0])))
-        
-        for index, value in enumerate(_app):
-            app_value_clean(value, vals, index)
-            
+            App = {}
+            for index, value in enumerate(_app):
+                app_value_clean(value, vals, index)
+                App[index] = vals[-1]
+
         # Add to dict
-        current_app = App(*vals)
-        output.update({current_app.id: current_app})
+        output[App['id']] = App
         duplicate.add(_app[0])
         
     print(f"Removed {dup_count} duplicate rows from {os.path.basename(file)}")
             
     return output
 
-# This code drives the above function ONLY if it can't be retrieved from a dill file
-def load_save_data(path):
-    csv_file = path[:-4] + "csv"
-    # I HAVE THEM SAVED thanks to dill :) better than pickle in that it'll save namedtuples to a .dill file :)
+# This code drives the above function ONLY if it can't be retrieved from a pickle file
+def load_save_data(path) -> dict:
+    csv_file = os.path.splitext(path)[0] + ".csv"
+    # I HAVE THEM SAVED thanks to pickle :) better than pickle in that it'll save namedtuples to a .pickle file :)
     # Did try using gzip to speed up serialisation but while it saved on space, it actually slowed the retrieval
     if os.path.exists(path):
 
         # Prime for threading
         def open_file(path, queue: Queue):
             with open(path, "rb") as file:
-                output = dill.load(file)
+                output = pickle.load(file)
                 queue.put(output)
 
         output_queue = Queue()
         custom_thread((show_progress, (f"Fetching {path}",)), (open_file, (path, output_queue)))
+        open_file(path, output_queue)
         output = output_queue.get()
         
         print(f"File loaded: {len(output)} items with {len(output[list(output.keys())[0]])} traits each\n")
 
     else:
-        print("No .dill found, generating data")
+        print("No .pickle found, generating data")
         
         output_queue = Queue()
         def gen_output(file, queue: Queue):
@@ -198,7 +212,6 @@ def load_save_data(path):
 
         custom_thread((show_progress, ("Generating",)), 
                       (gen_output, (csv_file, output_queue)))
-        
         # Retrieve dataset from queue
         output = output_queue.get() 
         del output_queue
@@ -206,21 +219,20 @@ def load_save_data(path):
         def dump_output(path, output):
             with open(path, "wb") as dump:
                 # Highest protocol is fastest and smallest file size
-                dill.dump(output, dump, protocol=dill.HIGHEST_PROTOCOL)
+                pickle.dump(output, dump, protocol=pickle.HIGHEST_PROTOCOL)
         
         custom_thread((show_progress, ("Serialising",)), 
                       (dump_output, (path, output)))
+        dump_output(path, output)
 
-        print(path, "Serialised using dill protocol", dill.HIGHEST_PROTOCOL, "\n")
+        print(path, "Serialised using pickle protocol", pickle.HIGHEST_PROTOCOL, "\n")
     
     return output
 
 # Makes it easy to retrieve the information we can see in the apps, depending on store
-
-
 def display_fields(apps: dict):
     print(f"fields accessible through {retrieve_name(apps)[0]}:")
-    for item in list(apps.values())[0]._fields:
+    for item in list(apps.values())[0].keys():
         print(item)
 
 def freq_table(dataset: dict, attr: str):
@@ -228,7 +240,7 @@ def freq_table(dataset: dict, attr: str):
     total = len(dataset)
 
     for item in dataset.values():
-        value = getattr(item, attr.lower())
+        value = item[attr.lower()]
         if value in table:
             table[value] += 1
         else:
