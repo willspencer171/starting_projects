@@ -257,3 +257,22 @@ def display_freq_table(dataset: dict, attr="", reverse=True, is_freq_table=False
     sorted_table = sorted(table.items(), key=lambda x: x[1], reverse=reverse)
     for key, value in sorted_table:
         print(key, value, sep=": ")
+
+def average(store: dict, field, number_field):
+    # Unique items, no repeats
+    fields = sorted(set([str(item[field])
+                 for item in store.values()]))
+    averages = []
+
+    for _field in fields:
+        # find average number of numerical field
+        subset = {key: value for key, value in store.items() if str(
+            value[field]) == _field}
+        total = sum([value[number_field]
+                    for value in subset.values()
+                    if isinstance(value[number_field], float)])
+        avg = round(total / (len(subset) or 1), 2)
+        print(_field, avg, sep=" : ")
+        averages.append(avg)
+    
+    return list(fields), averages
