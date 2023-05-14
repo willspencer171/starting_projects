@@ -6,6 +6,15 @@ While loosely following the guided project, I've been finding ways to streamline
 
 Methods of increasing processing speeds of the large datasets include threading, and pickling (using the dill module) in order to bypass the need to reprocess data that has already been processed
 
+>### Why is what I've done here good?
+>
+>- I've shown my ability to effectively clean comma-separated data using regular expressions and basic I/O operations
+>- My work is modular - this is important as it means my code can be read and analysed much easier
+>   - This required the code I wrote to be ubiquitous - cleaning the data doesn't just say "if the item at index n is an object of type x, convert to x", it manages different edge cases that could apply to different datasets and formats
+>   - Works for both the Apple and Google app store datasets, even though they are formatted differently
+>- I have shown an understanding of how data can be visualised using built-in visualisation libraries
+>- Use of various tools to indicate where I can make my code more efficient
+
 ### UPDATE: 10/05/23
 
 Thanks to a bit of advice, I used the cprofile module to figure out where in my code I was being slowed down. Processing around 18000 lines of a CSV file turns out to be less intensive than I thought, and it was the dill module that was slowing things down the most
