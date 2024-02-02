@@ -178,4 +178,25 @@ def distributions():
 
     plt.show()
 
-distributions()
+def styles():
+    """It may be pleasing to know that we can indeed customise our plots in Seaborn, 
+    otherwise it could well be a miserably schematic life
+    
+    Disappointed that there are only 5 themes that are talked about in the course tho
+    
+    The options are:
+        darkgrid
+        whitegrid
+        dark
+        white
+        ticks (???)"""
+
+    sns.set_style("darkgrid")
+
+    plt.figure(figsize=(14,6))
+
+    sns.lineplot(data=spot_data)
+
+    plt.show()
+
+styles()
