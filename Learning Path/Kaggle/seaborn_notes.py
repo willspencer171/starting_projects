@@ -124,5 +124,58 @@ plots with including regression lines"""
 
     plt.show()
 
+# Distribution plots
+
 def distributions():
-    pass
+    iris_data = pd.read_csv("Kaggle/data/iris.csv", index_col="Id")
+
+    ### Histograms
+    """A Histogram shows the distributions of values across a series
+    In the case of Petal Length in this dataset, we can see the counts of
+    lengths in given ranges. Each range is a bar"""
+    plt.figure(figsize=(5,5))
+
+    sns.histplot(iris_data['Petal Length (cm)'])
+    plt.title("Standard Histogram")
+
+    plt.show()
+
+    """Thing is, these are disgusting to look at so we can represent them using
+    a curve, or a Kernel Density Estimate plot"""
+
+    plt.figure(figsize=(5,5))
+
+    sns.kdeplot(iris_data['Petal Length (cm)'], fill=True)
+    plt.title("Kernel Density Estimate (KDE) Plot")
+
+    plt.show()
+
+    """We can also create these kdeplots as a 2 dimensional plot (called a jointplot)
+    This will show you a contour map of the kernel densities of your two Series"""
+
+    plt.figure(figsize=(5,5))
+
+    sns.jointplot(data=iris_data, x='Petal Length (cm)', y='Sepal Width (cm)', kind='kde')
+    plt.title("Joint KDE plot")
+
+    plt.show()
+
+    """We can also colour code our data by group using the hue keyword"""
+
+    plt.figure(figsize=(5,5))
+
+    sns.histplot(data=iris_data, x='Petal Length (cm)', hue='Species')
+    plt.title("Histogram with grouping")
+
+    plt.show()
+
+    """Can do the same with KDE plots"""
+
+    plt.figure(figsize=(5,5))
+
+    sns.kdeplot(data=iris_data, x="Petal Length (cm)", hue="Species", fill=True)
+    plt.title("Grouped KDE")
+
+    plt.show()
+
+distributions()
