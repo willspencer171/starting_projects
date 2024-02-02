@@ -22,5 +22,5 @@ In the notes, I show a few simple things you can do with `pandas`, as well as so
 What I've learned from this is that there are so many ways of representing data - you can represent relationships between data, trends in data, and distributions of data (feels like the tip of the iceberg).
 
 <p align="center">
-    <img src="images/Kaggle Seaborn.png" alt="Kaggle Data-Vis Plot Types">
+    <img width="70%" src="images/Kaggle Seaborn.png" alt="Kaggle Data-Vis Plot Types">
 </p>
