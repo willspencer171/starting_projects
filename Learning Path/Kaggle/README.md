@@ -6,16 +6,16 @@ I felt I needed a course in data science to cover these two topics to help out w
 
 ## Sections in this repo
 
-> - [`pandas`](#pandas)
-> - [`Seaborn`](#seaborn) (Data Visualisation)
+> - [`pandas`](#pandas-completed-012624)
+> - [`Seaborn`](#seaborn-completed-020224) (Data Visualisation)
 
-## `pandas`
+## `pandas` (completed 01/26/24)
 
 `pandas` is a powerful and essential tool for any Python data analyst hoping to make sense of their data. It can be used not just for accessing your dataset, but manipulating it and gaining insight from your data. You can group and sort your data so that it can be used in other areas of a package, or it can clean your data and ensure consistency over your dataset. Wonderful tool really
 
 In the notes, I show a few simple things you can do with `pandas`, as well as some more advanced things (that I really ought to look into further) like `Grouper`s
 
-## `Seaborn`
+## `Seaborn` (completed 02/02/24)
 
 `Seaborn` is a package designed to make `matplotlib` and `plotly` more accessible (since they can be a little scary to start with). It's user-friendly codebase doesn't allow for a huge amount of customisation or optimisation and (since it's backed by `matplotlib`) it can be relatively slow when dealing with a large dataset or intensive plot like a swarmplot.
 
