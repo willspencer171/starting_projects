@@ -4,10 +4,13 @@ Kaggle is a platform created by and for data scientists that hosts datasets as w
 
 I felt I needed a course in data science to cover these two topics to help out with my other projects, particularly the [Analyse My Finances](https://github.com/willspencer171/starting_projects/tree/master/Analyse%20My%20Finances) project where I do exactly what it says on the tin. It's supposed to help me with managing my spending habits, identifying where I'm spending most of my money, and where I can aim to improve both my data management skills and my financial growth.
 
+Since writing this, I've gone into looking at some other things more in depth. First up is data cleaning which is kind of mandatory in terms of preparing your data.
+
 ## Sections in this repo
 
 > - [`pandas`](#pandas-completed-012624)
 > - [`Seaborn`](#seaborn-completed-020224) (Data Visualisation)
+> - [Data Cleaning](#data-cleaning-in-progress)
 
 ## `pandas` (completed 01/26/24)
 
@@ -24,3 +27,8 @@ What I've learned from this is that there are so many ways of representing data 
 <p align="center">
     <img width="70%" src="images/Kaggle Seaborn.png" alt="Kaggle Data-Vis Plot Types">
 </p>
+
+## Data Cleaning (in progress)
+
+This is a piece that's had a few extra bits thrown in there. It talks about data cleaning in terms of handling missing values, data scaling and normalisation, date parsing, character encoding and inconsistent data entry. However, I went through the handling missing values tutorial and then the data scaling and normalisation section, but this was followed by "hey try this, this is some extra nerd stuff!" Regression. It was regression analysis. It's taken a while but I learned about a few of the things that I kinda glazed over in my undergrad degree like linear, logistic and poisson regression (I'm also looking into non-linear regression and predictive analysis soon).
+
