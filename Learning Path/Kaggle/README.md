@@ -8,9 +8,9 @@ Since writing this, I've gone into looking at some other things more in depth. F
 
 ## Sections in this repo
 
-> - [`pandas`](#pandas-completed-012624)
-> - [`Seaborn`](#seaborn-completed-020224) (Data Visualisation)
-> - [Data Cleaning](#data-cleaning-in-progress)
+> - `pandas`[↓](#pandas-completed-012624)
+> - `Seaborn`[↓](#seaborn-completed-020224) (Data Visualisation)
+> - Data Cleaning [↓](#data-cleaning-in-progress)
 
 ## `pandas` (completed 01/26/24)
 
@@ -31,4 +31,3 @@ What I've learned from this is that there are so many ways of representing data 
 ## Data Cleaning (in progress)
 
 This is a piece that's had a few extra bits thrown in there. It talks about data cleaning in terms of handling missing values, data scaling and normalisation, date parsing, character encoding and inconsistent data entry. However, I went through the handling missing values tutorial and then the data scaling and normalisation section, but this was followed by "hey try this, this is some extra nerd stuff!" Regression. It was regression analysis. It's taken a while but I learned about a few of the things that I kinda glazed over in my undergrad degree like linear, logistic and poisson regression (I'm also looking into non-linear regression and predictive analysis soon).
-
