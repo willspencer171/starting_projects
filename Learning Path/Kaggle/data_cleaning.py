@@ -1,11 +1,11 @@
 import pandas as pd, numpy as np, seaborn as sns, matplotlib.pyplot as plt
-from scipy import stats
+from scipy.stats import boxcox
 from mlxtend.preprocessing import minmax_scaling
 from sklearn.linear_model import LinearRegression
 
 """Preparing a dataset for Regression analysis"""
 
-bicycle_data = pd.read_csv('Kaggle/data/nyc-east-river-bicycle-counts.csv',
+bicycle_data = pd.read_csv('data/nyc-east-river-bicycle-counts.csv',
                            engine="pyarrow",
                            index_col=0)
 
@@ -32,6 +32,9 @@ print(f"""Our regression type choices:
 # regression requires date to be a number rather than a datetime
 # object. We can convert them as below:
 bicycle_data["Date_num"] = bicycle_data.Date.dt.day_of_year
+
+# Normalise with Box-Cox method
+bicycle_data["Date_num"] = boxcox(bicycle_data["Date_num"])[0].squeeze()
 
 fig, ax = plt.subplots(1, 2, figsize=(16, 6))
 
@@ -70,4 +73,4 @@ ax[1].fill_between(bicycle_data["Date"], preds+ci.iloc[0], preds-ci.iloc[0], col
 
 ax[1].set_title('Date vs Total (Poisson Regression)')
 
-plt.savefig('Kaggle/images/Linear and Poisson Regression.png')
+plt.savefig('images/Linear and Poisson Regression.png')
