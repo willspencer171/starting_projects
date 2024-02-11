@@ -171,6 +171,35 @@ I did try going into other models that are suited for time series like EST, but 
 
 ## Parsing Dates
 
+I'm moving on from Scaling and Normalisation, but it was very interesting to look into, if only briefly.
+
+Here, I'm looking at how to parse dates from object dtypes using the `pandas.to_datetime()` method.
+
+Let's say we have a load of dates in our data, which often happens when measuring things over a period of time. In data entry, unless you're using something that can specify the format of a cell (like in Excel), you're entering strings, which are just objects in `numpy` terms. These are parsed using `pd.to_datetime()`:
+
+```python
+df.parsed_dates = pd.to_datetime(df.dates, format="%m/%d/%y")
+```
+
+The format specified above tells the method that the string we're passing looks like a date with the format mm/dd/yy. The formats for this are specified using the [strftime directive](https://strftime.org).
+
+But what if your date entry is weird and wacky? There is a solution, and that is to let `pandas` guess using the `infer_datetime_format=True` term. This doesn't always do the job correctly if you're too creative with formatting, and is typically slower, but is effective if you're not sure about the format.
+
+From here, we can select attributes of the datetime object through `<datetime_series>.dt.<attribute>`. For example, to select the day of a date object - `df.parsed_dates.dt.day` - or the month number - `df.parsed_dates.dt.month`.
+
+In the tutorial exercise, I was given a dataset of volcanoes and their lastt eruption dates. The Last Known Eruption columns was full of string data stating either 'Unknown', '\<year\> CE' or '\<year\> BCE'. In order to clean this up for processing like actual numbers (not dates objects since it's just a year), I needed to drop rows that contained 'Unknown' (analogous to na, really), and convert BCE-containing dates to negative numbers and CE dates to positive integers.
+
+I created a little function that returns the integer value of the year, with the sign dependent on the presence of BCE or CE:
+
+```python
+CE_dict = {"CE": 1,
+          "BCE": -1}
+def strip_ce(year):
+    year, sign = year.split(" ")
+    year = int(year) * CE_dict[sign]
+    return year
+```
+
 ## Character Encoding
 
 ## Inconsistent Data Entry

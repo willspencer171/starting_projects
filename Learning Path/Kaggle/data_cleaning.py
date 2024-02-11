@@ -34,7 +34,7 @@ print(f"""Our regression type choices:
 bicycle_data["Date_num"] = bicycle_data.Date.dt.day_of_year
 
 # Normalise with Box-Cox method
-bicycle_data["Date_num"] = boxcox(bicycle_data["Date_num"])[0].squeeze()
+bicycle_data["Date_num"] = boxcox(bicycle_data["Date_num"])[0].squeeze() # Turns a 2-dimensional df into a 1-dimensional df if either of df.size() is 1
 
 fig, ax = plt.subplots(1, 2, figsize=(16, 6))
 
@@ -54,22 +54,25 @@ ax[0].set_title('Date vs Total (using sklearn)')
 
 # Since our data is count data, it's more fitting to use
 # Poisson regression which is not a model supported by sklearn
+# sklearn is a machine learning package rather than a statistical modelling package
 
 import statsmodels.api as sm
 
 X = bicycle_data[['Date_num']]
 X = sm.add_constant(X)
 
+# Create Poisson model and fit date series to it
 poisson_mod = sm.GLM(y, X, family=sm.families.Poisson()).fit()
 print(poisson_mod.summary())
 
 preds = poisson_mod.predict(X)
+# Confidence Intervals / Standard error margins
 ci = poisson_mod.bse
 print(ci)
 
 ax[1].scatter(x=bicycle_data["Date"], y=bicycle_data["Total"])
-#ax[1].plot(bicycle_data["Date"], preds, label='Poisson Prediction', color='red')
-ax[1].fill_between(bicycle_data["Date"], preds+ci.iloc[0], preds-ci.iloc[0], color='skyblue')
+ax[1].plot(bicycle_data["Date"], preds, label='Poisson Prediction', color='red')
+#ax[1].fill_between(bicycle_data["Date"], preds+ci.iloc[0], preds-ci.iloc[0], color='skyblue')
 
 ax[1].set_title('Date vs Total (Poisson Regression)')
 
