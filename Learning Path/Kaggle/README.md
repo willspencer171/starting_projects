@@ -10,7 +10,7 @@ Since writing this, I've gone into looking at some other things more in depth. F
 
 > - `pandas`[↓](#pandas-completed-012624)
 > - `Seaborn`[↓](#seaborn-completed-020224) (Data Visualisation)
-> - Data Cleaning [↓](#data-cleaning-in-progress)
+> - Data Cleaning [↓](#data-cleaning-completed-110224)
 
 ## `pandas` (completed 01/26/24)
 
