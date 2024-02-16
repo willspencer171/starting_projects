@@ -1,5 +1,4 @@
 import sys
-from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QApplication,
     QDialog,
@@ -9,6 +8,9 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
 )
 
+# We use a class-based design here, which allows us to create
+# a blueprint and also customise things a little.
+# We can even include our own methods which is nice
 class Window(QDialog):
     def __init__(self) -> None:
         super().__init__(parent=None)
