@@ -308,3 +308,11 @@ def greet(name):
 ...
 button.clicked.connect(partial(greet, "Will"))
 ```
+
+So, now that we have the main building blocks of PyQt6, let's make an actual application that we can use and showcase! You'll find it [here](./calculator_app/)
+
+## Closing Remarks (who tf do I think I am)
+
+Anyway, that's the end of this section, really. Just wanted to say thanks for reading this far, and maybe if you get the chance, check out my [LinkedIn](www.linkedin.com/in/willspencer171). It's not much and I don't post really, but it's there and if you want to connect, please do!
+
+Have a beautiful day!
