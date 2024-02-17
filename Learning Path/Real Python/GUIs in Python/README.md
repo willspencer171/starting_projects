@@ -16,6 +16,8 @@ Install `PyQt6` using the pip command as normal (without caps) and awayyyyy we g
 
 ### Let's Start with a Small Example
 
+Here, I'm following the tutorial set out by [Real Python](https://realpython.com/python-pyqt-gui-calculator/) for creating a calculator app. Another [project idea](https://realpython.com/bulk-file-rename-tool-python/) is to build an app that renames files in bulk.
+
 There are a few simple stages to creating your first application:
 
 - Import `QApplication` and all the required widgets from `PyQt6.QtWidgets`.
@@ -80,11 +82,11 @@ PyQt is built around a C++ library. Because of this, its naming conventions adhe
 
 The basics of PyQt are important, and most applications can be made from these basic building blocks. The main things to learn about are:
 
-- Widgets
-- Layout managers
-- Dialogs
-- Main windows
-- Applications
+- [Widgets](#widgets-→)
+- [Layout managers](#layout-managers-→)
+- [Dialogs](#dialogs-→)
+- [Main windows](#main-windows-→)
+- [Applications](#applications-→)
 - Event loops
 - Signals and slots
 
@@ -187,3 +189,122 @@ Loads more about Layouts can be found [here](https://realpython.com/python-pyqt-
 There are two main types of GUI that we'll be looking at. Firstly is dialog-based GUIs (main window style will come later, but is what we were doing earlier tbf). Dialogs are windows that typically warrant communication from the user, and only appear a few times, rather than being an entire application.
 
 In a main-window style application that uses dialog windows, you can show them in two ways: *modal* and *modeless*. Modal dialogs prevent the user interacting with other visible windows while the dialog is open, while modeless ones do not. They can be activated by using the window's `.exec()` command or `.show()` command, respectively.
+
+### Main-Windows [→](https://realpython.com/python-pyqt-gui-calculator/#main-windows)
+
+Main Windows are a prebuilt GUI layout style that most applications run with. They typically have a menu bar, toolbar, status bar and a central widget (where most of the application will run). These are for larger applications with more functionality compared with a dialog style app.
+
+This is a little more complicated to implement, but you need to know that you can't have a main-window without a central widget, which can be any `QWidget` subclass. The main window GUI can be implemented by inheriting the `QMainWindow` class.
+
+The `QMainWindow` class makes use of abstract methods which need to be declared in the `__init__` method like this:
+
+```python
+class Window(QMainWindow):
+    def __init__(self):
+        super().__init__(parent=None)
+        self.setWindowTitle("Main-Window Style")
+        self.setCentralWidget(QLabel("Hello!")) # Important
+        self._createMenu()
+        self._createToolBar()
+        self._createStatusBar()
+    
+    def _createMenu(self):
+        # Ampersand sets Alt-M to select Menu
+        menu = self.menuBar().addMenu("&Menu")
+        menu.addAction("&Exit", self.close)
+
+    def _createToolBar(self):
+        tools = QToolBar()
+        tools.addAction("Exit", self.close)
+        self.addToolBar(tools)
+
+    def _createStatusBar(self):
+        status = QStatusBar()
+        status.showMessage("I'm the Status Bar")
+        self.setStatusBar(status)
+```
+
+More on Menus, Toolbars and StatusBars found [here](https://realpython.com/python-menus-toolbars/)
+
+### Applications [→](https://realpython.com/python-pyqt-gui-calculator/#applications)
+
+Application objects are the most fundamental component of PyQt - without it there would be no app. The application object has the following responsibilites:
+
+- Handling initialisation and finalisation of your application
+- Provides the event loop and handling of events
+- Handles settings for your system and app
+- Provides access to the global environment such as directory and screen size
+- Parsing command-line arguments
+- Defining app visual themes
+- Language localisation
+
+One of the most important responsibilities of the Application is the event loop:
+
+### Event Loops [→](https://realpython.com/python-pyqt-gui-calculator/#event-loops)
+
+Events are things that happen. Your application has an event loop that is constantly checking for events. A really common example of an event is a button click. This will be detected by the application's event loop (or main loop). First, the event loop checks to see if the event is a terminate event. If it is, the event loop finishes and the application is torn down as per the methods set out in the application object.
+
+In `PyQt6`, the `QApplication` object's event loop can be started using the `.exec()` method.
+
+Now, if you want an event to actually trigger an action, you need to pair the two together. In `PyQt6`, you'll be using signals and slots.
+
+### Signals and Slots [→](https://realpython.com/python-pyqt-gui-calculator/#signals-and-slots)
+
+PyQt widgets are called event-catchers, meaning that they can receive events. When they do, they emit a signal, which announces to the event loop that their state has changed. This on its own doesn't do anything, but connecting this signal to a slot will tell the event loop what action to perform.
+
+A slot can be any Python callable object like a function, method or lambda. This is the action that is performed when a connected signal is emitted.
+
+A signal can be connected to many slots<br>
+A slot can be connected to many signals<br>
+A signal may be connected to another signal
+
+You can connect a signal and slot together throught the syntax: `widget.signal.connect(slot_function)` (without calling the function). From now on, the `widget`'s `signal` calls the `slot_function()`.
+
+Let's give a hello world example:
+
+```python
+from PyQt6.QtWidgets import (
+    QApplication, 
+    QLabel, 
+    QPushButton, 
+    QVBoxLayout, 
+    QWidget)
+
+def greet():
+    if msgLabel.text():
+        msgLabel.setText("")
+    else:
+        msgLabel.setText("Hello, World!")
+
+app = QApplication([])
+window = QWidget()
+window.setWindowTitle("Signals and slots")
+layout = QVBoxLayout()
+
+button = QPushButton("Greet")
+button.clicked.connect(greet)
+
+layout.addWidget(button)
+msgLabel = QLabel("")
+layout.addWidget(msgLabel)
+window.setLayout(layout)
+window.show()
+sys.exit(app.exec())
+```
+
+And this produces a little window with a button that toggles the message `"Hello, World!"`
+
+If you want to pass arguments to a method, you can do so by using the `functools.partial` method to call the target signal, loaded with arguments:
+
+```python
+from functools import partial
+
+def greet(name):
+    if msgLabel.text():
+        msgLabel.setText("")
+    else:
+        msgLabel.setText(f"Hello, {name}!")
+
+...
+button.clicked.connect(partial(greet, "Will"))
+```
