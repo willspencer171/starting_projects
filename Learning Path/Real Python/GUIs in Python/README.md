@@ -87,8 +87,8 @@ The basics of PyQt are important, and most applications can be made from these b
 - [Dialogs](#dialogs-→)
 - [Main windows](#main-windows-→)
 - [Applications](#applications-→)
-- Event loops
-- Signals and slots
+- [Event loops](#event-loops-→)
+- [Signals and slots](#signals-and-slots-→)
 
 ### Widgets [→](https://realpython.com/python-pyqt-gui-calculator/#widgets)
 
@@ -196,7 +196,7 @@ Main Windows are a prebuilt GUI layout style that most applications run with. Th
 
 This is a little more complicated to implement, but you need to know that you can't have a main-window without a central widget, which can be any `QWidget` subclass. The main window GUI can be implemented by inheriting the `QMainWindow` class.
 
-The `QMainWindow` class makes use of abstract methods which need to be declared in the `__init__` method like this:
+The `QMainWindow` class makes use of methods which need to be declared in the `__init__` method like this:
 
 ```python
 class Window(QMainWindow):
